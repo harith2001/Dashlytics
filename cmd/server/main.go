@@ -14,4 +14,7 @@ func main() {
 		log.Fatalf("Error loading CSV file: %v", err)
 	}
 	fmt.Printf("Loaded %d transactions\n Sample: %+v\n", len(transactions), transactions[0])
+
+	//preprocess and cache indexed data (large dataset)
+	repository.InitDataStore(transactions)
 }
