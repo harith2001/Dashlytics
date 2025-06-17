@@ -1,0 +1,38 @@
+basePath: /api/v1
+definitions:
+  adapter.CountryRevenue:
+    properties:
+      country:
+        type: string
+      product_name:
+        type: string
+      total_revenue:
+        type: number
+      transaction_count:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    name: Harith
+  description: Backend for visualizing large-scale CSV analytics in Go
+  title: Dashlytics API
+  version: "1.0"
+paths:
+  /country-revenue:
+    get:
+      description: Returns a list of countries with total revenue and transaction
+        count per product
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/adapter.CountryRevenue'
+            type: array
+      summary: Get country-level revenue data
+      tags:
+      - revenue
+swagger: "2.0"
