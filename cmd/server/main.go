@@ -11,6 +11,7 @@ import (
 	_ "Dashlytics/docs"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 )
 
@@ -32,6 +33,13 @@ func main() {
 	repository.InitDataStore(transactions)
 
 	r := chi.NewRouter()
+	//CORS middleware
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:5173"}, // Allow all origins
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		AllowCredentials: true,
+	}))
 
 	// Swagger endpoint
 	r.Get("/swagger/*", httpSwagger.WrapHandler)
