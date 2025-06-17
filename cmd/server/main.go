@@ -39,12 +39,15 @@ func main() {
 	//register routes
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Get("/country-revenue", adapter.GetCountryRevenue)
-		// r.Get("/top-products", adapter.GetTopProducts)
-		// r.Get( "/monthly-revenue", adapter.GetMonthlyRevenue)
-		// r.Get("/top-regions", adapter.GetTopRegions)
+		r.Get("/top-products", adapter.GetTopProducts)
+		r.Get("/monthly-sales", adapter.GetMonthlySales)
+		r.Get("/top-regions", adapter.GetTopRegions)
 	})
 
+	//start server
 	fmt.Println("Starting server on :8080")
+	// swagger endpoint
+	fmt.Println("Swagger UI available at http://localhost:8080/swagger/index.html")
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}

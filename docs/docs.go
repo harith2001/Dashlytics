@@ -39,6 +39,75 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/monthly-sales": {
+            "get": {
+                "description": "Returns quantity of items sold grouped by month",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sales"
+                ],
+                "summary": "Get total quantity sold per month",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/adapter.MonthlySales"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/top-products": {
+            "get": {
+                "description": "Returns top products with quantity sold and stock",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get top 20 most frequently purchased products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/adapter.TopProduct"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/top-regions": {
+            "get": {
+                "description": "Returns regions with highest sales and revenue",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "regions"
+                ],
+                "summary": "Get top 30 regions by total revenue and items sold",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/adapter.RegionStats"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -55,6 +124,46 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "transaction_count": {
+                    "type": "integer"
+                }
+            }
+        },
+        "adapter.MonthlySales": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "description": "format: \"YYYY-MM\"",
+                    "type": "string"
+                },
+                "total_quantity_sold": {
+                    "type": "integer"
+                }
+            }
+        },
+        "adapter.RegionStats": {
+            "type": "object",
+            "properties": {
+                "region": {
+                    "type": "string"
+                },
+                "total_item_sold": {
+                    "type": "integer"
+                },
+                "total_revenue": {
+                    "type": "number"
+                }
+            }
+        },
+        "adapter.TopProduct": {
+            "type": "object",
+            "properties": {
+                "product_name": {
+                    "type": "string"
+                },
+                "stock_quantity": {
+                    "type": "integer"
+                },
+                "total_quantity_sold": {
                     "type": "integer"
                 }
             }

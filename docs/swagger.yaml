@@ -11,6 +11,32 @@ definitions:
       transaction_count:
         type: integer
     type: object
+  adapter.MonthlySales:
+    properties:
+      month:
+        description: 'format: "YYYY-MM"'
+        type: string
+      total_quantity_sold:
+        type: integer
+    type: object
+  adapter.RegionStats:
+    properties:
+      region:
+        type: string
+      total_item_sold:
+        type: integer
+      total_revenue:
+        type: number
+    type: object
+  adapter.TopProduct:
+    properties:
+      product_name:
+        type: string
+      stock_quantity:
+        type: integer
+      total_quantity_sold:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -35,4 +61,49 @@ paths:
       summary: Get country-level revenue data
       tags:
       - revenue
+  /monthly-sales:
+    get:
+      description: Returns quantity of items sold grouped by month
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/adapter.MonthlySales'
+            type: array
+      summary: Get total quantity sold per month
+      tags:
+      - sales
+  /top-products:
+    get:
+      description: Returns top products with quantity sold and stock
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/adapter.TopProduct'
+            type: array
+      summary: Get top 20 most frequently purchased products
+      tags:
+      - products
+  /top-regions:
+    get:
+      description: Returns regions with highest sales and revenue
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/adapter.RegionStats'
+            type: array
+      summary: Get top 30 regions by total revenue and items sold
+      tags:
+      - regions
 swagger: "2.0"
