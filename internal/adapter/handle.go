@@ -138,9 +138,11 @@ type MonthlySales struct {
 
 // MonthlySalesHandler godoc
 // @Summary Get total quantity sold per month
-// @Description Returns quantity of items sold grouped by month
+// @Description Returns quantity of items sold grouped by month, supports sort and order query params
 // @Tags sales
 // @Produce json
+// @Param sort query string false "Sort by 'month' or 'sales'" Enums(month,sales)
+// @Param order query string false "Sort order: 'asc' or 'desc'" Enums(asc,desc)
 // @Success 200 {array} MonthlySales
 // @Router /monthly-sales [get]
 func GetMonthlySales(w http.ResponseWriter, r *http.Request) {
@@ -162,10 +164,26 @@ func GetMonthlySales(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	//sort by month
-	sort.Slice(result, func(i, j int) bool {
-		return result[i].Month < result[j].Month
-	})
+	//parse sort and order query params
+	sortBy := r.URL.Query().Get("sort") // "month" or "sales"
+	order := r.URL.Query().Get("order") // "asc" or "desc"
+
+	// Default behavior: sort by sales descending
+	if sortBy == "month" {
+		sort.Slice(result, func(i, j int) bool {
+			if order == "asc" {
+				return result[i].Month < result[j].Month
+			}
+			return result[i].Month > result[j].Month
+		})
+	} else {
+		sort.Slice(result, func(i, j int) bool {
+			if order == "asc" {
+				return result[i].TotalQuantitySold < result[j].TotalQuantitySold
+			}
+			return result[i].TotalQuantitySold > result[j].TotalQuantitySold
+		})
+	}
 
 	//Get "limit" from query param
 	limit := 100 // default

@@ -42,7 +42,7 @@ const docTemplate = `{
         },
         "/monthly-sales": {
             "get": {
-                "description": "Returns quantity of items sold grouped by month",
+                "description": "Returns quantity of items sold grouped by month, supports sort and order query params",
                 "produces": [
                     "application/json"
                 ],
@@ -50,6 +50,28 @@ const docTemplate = `{
                     "sales"
                 ],
                 "summary": "Get total quantity sold per month",
+                "parameters": [
+                    {
+                        "enum": [
+                            "month",
+                            "sales"
+                        ],
+                        "type": "string",
+                        "description": "Sort by 'month' or 'sales'",
+                        "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "Sort order: 'asc' or 'desc'",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

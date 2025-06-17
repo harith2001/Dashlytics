@@ -63,7 +63,23 @@ paths:
       - revenue
   /monthly-sales:
     get:
-      description: Returns quantity of items sold grouped by month
+      description: Returns quantity of items sold grouped by month, supports sort
+        and order query params
+      parameters:
+      - description: Sort by 'month' or 'sales'
+        enum:
+        - month
+        - sales
+        in: query
+        name: sort
+        type: string
+      - description: 'Sort order: ''asc'' or ''desc'''
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order
+        type: string
       produces:
       - application/json
       responses:
