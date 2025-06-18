@@ -159,6 +159,9 @@ const docTemplate = `{
                 },
                 "total_quantity_sold": {
                     "type": "integer"
+                },
+                "total_revenue": {
+                    "type": "number"
                 }
             }
         },

@@ -132,8 +132,9 @@ func GetTopProducts(w http.ResponseWriter, r *http.Request) {
 // MonthlySales represents total quantity sold per month
 
 type MonthlySales struct {
-	Month             string `json:"month"` //format: "YYYY-MM"
-	TotalQuantitySold int    `json:"total_quantity_sold"`
+	Month             string  `json:"month"` //format: "YYYY-MM"
+	TotalQuantitySold int     `json:"total_quantity_sold"`
+	TotalRevenue      float64 `json:"total_revenue"`
 }
 
 // MonthlySalesHandler godoc
@@ -147,21 +148,22 @@ type MonthlySales struct {
 // @Router /monthly-sales [get]
 func GetMonthlySales(w http.ResponseWriter, r *http.Request) {
 	data := repository.GlobalDataStore
-	salesMap := make(map[string]int)
+	salesMap := make(map[string]*MonthlySales)
 
 	//Group by month
 	for _, t := range data.AllTransactions {
 		monthKey := t.Date.Format("2006-01") // YYYY-MM format
-		salesMap[monthKey] += t.Quantity
+		if _, ok := salesMap[monthKey]; !ok {
+			salesMap[monthKey] = &MonthlySales{Month: monthKey}
+		}
+		salesMap[monthKey].TotalQuantitySold += t.Quantity
+		salesMap[monthKey].TotalRevenue += t.TotalPrice
 	}
 
 	//convert to slice
 	var result []MonthlySales
-	for month, qty := range salesMap {
-		result = append(result, MonthlySales{
-			Month:             month,
-			TotalQuantitySold: qty,
-		})
+	for _, v := range salesMap {
+		result = append(result, *v)
 	}
 
 	//parse sort and order query params
