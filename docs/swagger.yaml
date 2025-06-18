@@ -18,6 +18,8 @@ definitions:
         type: string
       total_quantity_sold:
         type: integer
+      total_revenue:
+        type: number
     type: object
   adapter.RegionStats:
     properties:
