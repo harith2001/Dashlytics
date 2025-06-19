@@ -34,6 +34,16 @@
 
 ## 🛠️ Setup Instructions
 
+### ✅ Docker (Optional)
+
+If you have Docker installed, you can start the entire application using:
+
+```bash
+docker-compose up --build
+```
+
+This will build and launch both the backend and frontend services automatically.
+
 ### ✅ Backend
 
 1. Clone the repo and navigate to backend root:
