@@ -1,0 +1,76 @@
+name: Dashlytics CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test-backend:
+    name: Build & Test Go Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build Backend
+        run: go build -o dashlytics-backend ./cmd/server/main.go
+
+      - name: Run Unit Tests
+        run: go test ./internal/adapter/... -v
+
+  build-frontend:
+    name: Build React Frontend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Frontend Dependencies
+        working-directory: ./dashlytics-frontend
+        run: npm ci
+
+      - name: Build Frontend
+        working-directory: ./dashlytics-frontend
+        run: npm run build
+
+  docker-build:
+    name: Build & Push Docker Images
+    runs-on: ubuntu-latest
+    needs: [build-and-test-backend, build-frontend]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Backend Image
+        run: |
+          docker build -f Dockerfile.backend -t ${{ secrets.DOCKER_USERNAME }}/dashlytics-backend:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/dashlytics-backend:latest
+
+      - name: Build & Push Frontend Image
+        run: |
+          docker build -f dashlytics-frontend/Dockerfile.frontend -t ${{ secrets.DOCKER_USERNAME }}/dashlytics-frontend:latest ./dashlytics-frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/dashlytics-frontend:latest

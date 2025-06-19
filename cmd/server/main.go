@@ -35,7 +35,7 @@ func main() {
 	r := chi.NewRouter()
 	//CORS middleware
 	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:5173"}, // Allow all origins
+		AllowedOrigins:   []string{"http://localhost:5173", "http://localhost:3000"}, // Allow all origins
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		AllowCredentials: true,
